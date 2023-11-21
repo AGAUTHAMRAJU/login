@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .captcha-container {
+            margin-top: 10px;
+        }
+
+        #captcha-image {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        #result-checkbox {
+            display: none;
+        }
+
+        #result-text {
+            margin-top: 10px;
+        }
+
+        .captcha-correct {
+            color: green;
+        }
+
+        .captcha-incorrect {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <form action="/signin" method="post" id="register" class="input-group">
+        {% csrf_token %}
+        <div class="input-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" class="input-field" name="username" placeholder="Enter User name" required>
+        </div>
+        <div class="input-group">
+            <label for="pass1">Password</label>
+            <input type="password" id="pass1" class="input-field" name="pass1" placeholder="Password" required>
+        </div>
+
+        <!-- CAPTCHA Container -->
+        <div class="captcha-container">
+            <p>Enter the characters from the image:</p>
+            <img id="captcha-image" src="" alt="CAPTCHA Image">
+            <br>
+            <input type="text" id="captcha-input" class="submit-btn" placeholder="Enter CAPTCHA" required>
+        </div>
+
+        <!-- Button to check CAPTCHA -->
+        <button type="button" onclick="checkCaptcha()" class="submit-btn">Check CAPTCHA</button>
+
+        <!-- Result Checkbox -->
+        <input type="checkbox" id="result-checkbox" disabled>
+        <label for="result-checkbox" id="result-text" class="captcha-incorrect"></label>
+
+        <!-- Submit button (initially hidden) -->
+        <button type="submit" id="submit-btn" style="display: none;" class="submit-btn">Submit</button>
+    </form>
+
+    <script>
+        function generateCaptcha() {
+            const captchaContainer = document.getElementById('captcha-container');
+            const captchaImage = document.getElementById('captcha-image');
+            const captchaLength = 6;
+            const captchaText = generateRandomString(captchaLength);
+
+            captchaImage.src = `https://dummyimage.com/120x40/000/fff&text=${captchaText}`;
+            return captchaText;
+        }
+
+        function checkCaptcha() {
+            const userInput = document.getElementById('captcha-input').value;
+            const captchaText = window.captchaText;
+            const resultCheckbox = document.getElementById('result-checkbox');
+            const resultText = document.getElementById('result-text');
+            const submitBtn = document.getElementById('submit-btn');
+
+            if (userInput === captchaText) {
+                // Display a checkmark in the checkbox
+                resultCheckbox.checked = true;
+                resultText.textContent = 'CAPTCHA is correct';
+                resultText.classList.remove('captcha-incorrect');
+                resultText.classList.add('captcha-correct'); // Add green color
+                submitBtn.style.display = 'block'; // Show submit button
+            } else {
+                // Display an "X" in the checkbox
+                resultCheckbox.checked = false;
+                resultText.textContent = 'CAPTCHA is incorrect';
+                resultText.classList.remove('captcha-correct');
+                resultText.classList.add('captcha-incorrect'); // Add red color
+                submitBtn.style.display = 'none'; // Hide submit button
+            }
+
+            // Show the result checkbox and text
+            resultCheckbox.style.display = 'inline-block';
+            resultText.style.display = 'block';
+        }
+
+        function generateRandomString(length) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+
+        // Initial generation of captcha
+        window.captchaText = generateCaptcha();
+    </script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .head {
+            height: 100%;
+            width: 100%;
+            background-color: #F0AF3C;
+            background-position: center;
+            background-size: cover;
+            position: absolute;
+        }     
+        .form-box {
+            width: 380px;
+            height: 520px;
+            position: relative;
+            margin: 6% auto;
+            background: #fff;
+            padding: 5px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .button-box {
+            width: 200px;
+            margin-top: 30px;
+            margin-left: 90px;
+            position: relative;
+            box-shadow: 0 0 20px 9px #ff61241f;
+            border-radius: 30px;
+            align-content: center;
+        
+        }
+        
+        .toggle-btn {
+            padding: 10px 10px;
+            cursor: pointer;
+            background: transparent;
+            border: 0;
+            outline: none;
+            position: relative;
+            margin-left: 16px;
+        }
+        
+        #btn {
+            top: 0;
+            left: 0;
+            position: absolute;
+            width: 100px;
+            height: 100%;
+            background: linear-gradient(to right, orange, orangered);
+            border-radius: 30px;
+            transition: 0.4s;
+        }
+        
+        .input-group {
+            width: 280px;
+            top: 80px;
+            position: absolute;
+            transition: 0.5s;
+            
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 10px 10px;
+            margin: 5px 0;
+            border: 15px, 0, 0, 5px;
+            outline: none;
+            background: transparent;
+            border-radius: 10px;
+        }
+        
+        .submit-btn {
+            width: 90%;
+            padding: 12px 25px;
+            cursor: pointer;
+            display: block;
+            margin: auto;
+            background: linear-gradient(to right, orange, orangered);
+            border: 0;
+            outline: none;
+            border-radius: 10px;
+        
+        }
+        
+        .check-box {
+            margin: 15px 8px 15px 3px;
+        }
+        
+        span {
+            color: orange;
+            font-size: 20px;
+            bottom: 50px;
+            position: absolute;
+        }
+        
+        #login {
+            left: 50px;
+        }
+        
+        #register {
+            left: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="head">
+        <div class="form-box">
+            <div class="button-box">
+                <div id="btn"></div>
+                <button type="button" class="toggle-btn" onclick="login()">REGISTER</button>
+                <button type="button" class="toggle-btn" onclick="register()">LOGIN</button>
+            </div>
+            <form action="/signup" method="post" id="login" class="input-group">
+                {% csrf_token %}
+                <label for="">Username</label>
+                <input type="text" id="username" name="username" class="input-field" placeholder="Enter name" required>
+                <br>
+                <label for="">First name</label>
+                <input type="text" id="fname" name="fname" class="input-field" placeholder="Firstname" required>
+                <br>
+                <label for="">Last name</label>
+                <input type="text" id="lname" name="lname" class="input-field" placeholder="Lastname" required>
+                <br>
+                <label for="">Email</label>
+                <input type="email" id="email" name="email" class="input-field" placeholder="Enter email" required>
+                <br>
+                <label for="">password</label>
+                <input type="password" id="pass1" name="pass1" class="input-field" placeholder="Password" required>
+                <br>
+                <label for="">Retype Password</label>
+                <input type="password" id="pass2" name="pass2" class="input-field" placeholder="Retype Passwoord" required>
+                <br>
+                <button type="submit" class="submit-btn">Submit Registration</button>
+                <!-- Display messages using Django messages framework -->
+                <div id="alert_messages" style="display: none;">
+                    {% for message in messages %}
+                        <div class="message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            </form>
+
+        <form action="/signin" method="post" id="register" class="input-group">
+            {% csrf_token %}
+            <label for="">Username</label>
+            <input type="text" id="username" class="input-field" name="username" placeholder="Enter User name" required>
+            <br>
+            <label for="">Password</label>
+            <input type="password" id="pass1" class="input-field" name="pass1" placeholder="Password" required>
+            <br>
+        <!-- CAPTCHA Container -->
+        <div class="captcha-container">
+            <p>Enter the characters from the image:</p>
+            <img id="captcha-image" src="" alt="CAPTCHA Image">
+            <br>
+            <input type="text" id="captcha-input" class="input-field" placeholder="Enter CAPTCHA" required>
+        </div>
+
+        <!-- Button to check CAPTCHA -->
+        <button type="button" onclick="checkCaptcha()" class="submit-btn">Check CAPTCHA</button>
+
+        <!-- Result Checkbox -->
+        <input type="checkbox" id="result-checkbox" disabled>
+        <label for="result-checkbox" id="result-text" class="captcha-incorrect"></label>
+
+        <!-- Submit button (initially hidden) -->
+        <button type="submit" id="submit-btn" style="display: none;" class="submit-btn">Submit</button>
+    </form>
+
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Check if the page has any messages in the alert_messages div
+            var alertMessageDiv = document.getElementById("alert_messages");
+    
+            if (alertMessageDiv) {
+                // Display each message in an alert
+                alertMessageDiv.querySelectorAll(".message").forEach(function(message) {
+                    alert(message.textContent.trim());
+                });
+            }
+        });
+        var x = document.getElementById("login");
+        var y = document.getElementById("register");
+        var z = document.getElementById("btn");
+
+        function register() {
+            x.style.left = "-350px";
+            y.style.left = "50px";
+            z.style.left = "110px";
+        }
+        function login() {
+            x.style.left = "50px";
+            y.style.left = "450px";
+            z.style.left = "0px";
+
+        }
+            function generateCaptcha() {
+                const captchaContainer = document.getElementById('captcha-container');
+                const captchaImage = document.getElementById('captcha-image');
+                const captchaLength = 6;
+                const captchaText = generateRandomString(captchaLength);
+    
+                captchaImage.src = `https://dummyimage.com/120x40/000/fff&text=${captchaText}`;
+                return captchaText;
+            }
+    
+            function checkCaptcha() {
+                const userInput = document.getElementById('captcha-input').value;
+                const captchaText = window.captchaText;
+                const resultCheckbox = document.getElementById('result-checkbox');
+                const resultText = document.getElementById('result-text');
+                const submitBtn = document.getElementById('submit-btn');
+    
+                if (userInput === captchaText) {
+                    // Display a checkmark in the checkbox
+                    resultCheckbox.checked = true;
+                    resultText.textContent = 'CAPTCHA is correct';
+                    resultText.classList.remove('captcha-incorrect');
+                    resultText.classList.add('captcha-correct'); // Add green color
+                    submitBtn.style.display = 'block'; // Show submit button
+                } else {
+                    // Display an "X" in the checkbox
+                    resultCheckbox.checked = false;
+                    resultText.textContent = 'CAPTCHA is incorrect';
+                    resultText.classList.remove('captcha-correct');
+                    resultText.classList.add('captcha-incorrect'); // Add red color
+                    submitBtn.style.display = 'none'; // Hide submit button
+                }
+    
+                // Show the result checkbox and text
+                resultCheckbox.style.display = 'inline-block';
+                resultText.style.display = 'block';
+            }
+    
+            function generateRandomString(length) {
+                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                let result = '';
+                for (let i = 0; i < length; i++) {
+                    result += characters.charAt(Math.floor(Math.random() * characters.length));
+                }
+                return result;
+            }
+    
+            // Initial generation of captcha
+            window.captchaText = generateCaptcha();
+
+    </script>
+
+</body>
+
+</html>

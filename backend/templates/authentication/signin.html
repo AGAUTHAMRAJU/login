@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        <form action="/signin" method="post" id="register" class="input-group">
+            {% csrf_token %}
+            <label for="">Username</label>
+            <input type="text" id="username" class="input-field" name="username" placeholder="Enter User name" required>
+            <br>
+            <label for="">Password</label>
+            <input type="password" id="pass1" class="input-field" name="pass1" placeholder="Password" required>
+            <br>
+        <!-- CAPTCHA Container -->
+        <div class="captcha-container">
+            <p>Enter the characters from the image:</p>
+            <img id="captcha-image" src="" alt="CAPTCHA Image">
+            <br>
+            <input type="text" id="captcha-input" class="input-field" placeholder="Enter CAPTCHA" required>
+        </div>
+
+        <!-- Button to check CAPTCHA -->
+        <button type="button" onclick="checkCaptcha()" class="submit-btn">Check CAPTCHA</button>
+
+        <!-- Result Checkbox -->
+        <input type="checkbox" id="result-checkbox" disabled>
+        <label for="result-checkbox" id="result-text" class="captcha-incorrect"></label>
+
+        <!-- Submit button (initially hidden) -->
+        <button type="submit" id="submit-btn" style="display: none;" class="submit-btn">Submit</button>
+    </form>
+        <script src="" async defer></script>
+    </body>
+</html>
